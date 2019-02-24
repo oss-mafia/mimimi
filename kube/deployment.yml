@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mimimi
+spec:
+  selector:
+    matchLabels:
+      app: mimimi
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mimimi
+    spec:
+      containers:
+      - name: mimimi
+        image: gcr.io/ignasi-permanent-ffxxqcd8/mimimi:v0.1
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          protocol: TCP
+          containerPort: 4390
+        envFrom:
+         - secretRef:
+             name: mimimi-tokens

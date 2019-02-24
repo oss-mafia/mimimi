@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mimimi-tokens
+data:
+  ACCESS_TOKEN: changeme
+  VERIFICATION_TOKEN: changeme
