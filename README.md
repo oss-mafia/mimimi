@@ -4,7 +4,7 @@ A Slack bot that mimimizes all messages sent to the channels where the bot is pr
 
 ![mimimi](mimimi.jpg)
 
-# Building
+# Build
 
 ```bash
 $ make help
@@ -23,6 +23,21 @@ Packaging and distribution
 
 Others
   help             Display this help
+```
+
+# Deploy
+
+Convenience service and deployment manifests are provided to deploy the bot in a Kubernetes that has
+[Istio](https://istio.io/) installed.
+
+First of all update the `config/mimimi-secrets.yaml` file with appropriate values, and then apply all the provided
+manifests:
+
+```bash
+kubectl create namespace mimimi
+kubectl label namespace mimimi istio-injection=enabled
+
+kubectl apply -n mimimi -f config/  
 ```
 
 # License

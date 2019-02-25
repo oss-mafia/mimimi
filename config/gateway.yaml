@@ -1,0 +1,34 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: mimimi-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mimimi
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - mimimi-gateway
+  http:
+  - match:
+    - uri:
+        exact: /events
+    route:
+    - destination:
+        host: mimimi
+        port:
+          number: 80
