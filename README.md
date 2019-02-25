@@ -20,7 +20,6 @@ Build targets
 Packaging and distribution
   docker-build     Build the Docker image
   docker-push      Push the Docker image to the configured registry
-  docker-run       Run the Docker image
 
 Others
   help             Display this help
