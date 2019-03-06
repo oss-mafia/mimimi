@@ -1,6 +1,6 @@
 # Mimimi Slack bot
 
-[![CircleCI](https://circleci.com/gh/oss-mafia/mimimi/tree/master.svg?style=svg&circle-token=TODO)](https://circleci.com/gh/oss-mafia/mimimi/tree/master)
+[![CircleCI](https://circleci.com/gh/oss-mafia/mimimi.svg?style=svg)](https://circleci.com/gh/oss-mafia/mimimi)
 
 A Slack bot that mimimizes all messages sent to the channels where the bot is present.
 
