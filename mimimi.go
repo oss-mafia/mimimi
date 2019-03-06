@@ -29,14 +29,18 @@ type Bot struct {
 	Username          string
 	AccessToken       string
 	VerificationToken string
-	Api               *slack.Client
+	API               *slack.Client
+
+	// reply function to be used to post messages back. Useful to allow changing it for
+	// testing
+	reply func(target string, message string) error
 }
 
 var vowels *regexp.Regexp
 
 func init() {
 	var err error
-	vowels, err = regexp.Compile("[aeou]")
+	vowels, err = regexp.Compile("[aeouAEOU]")
 	if err != nil {
 		log.Fatalf("error compiling regexp: %v\n", err)
 	}
@@ -44,23 +48,33 @@ func init() {
 
 // New creates a new Mimimi bot
 func New(username, accessToken, verificationToken string) Bot {
+	api := slack.New(accessToken)
 	return Bot{
 		Username:          username,
 		AccessToken:       accessToken,
 		VerificationToken: verificationToken,
-		Api:               slack.New(accessToken),
+		API:               api,
+		reply: func(target string, message string) error {
+			_, _, err := api.PostMessage(target, slack.MsgOptionText(message, false))
+			return err
+		},
 	}
 }
 
 // HandleMessage takes action on the given message
 func (m Bot) HandleMessage(event *slackevents.MessageEvent) error {
 	if event.Username != m.Username { // Do not reply to ourselves to avoid loops
-		reply := strings.ToUpper(vowels.ReplaceAllString(event.Text, "I"))
+		reply := mimimize(event.Text)
 		if reply != strings.ToUpper(event.Text) {
-			if _, _, err := m.Api.PostMessage(event.Channel, slack.MsgOptionText(reply, false)); err != nil {
+			if err := m.reply(event.Channel, reply); err != nil {
 				return errors.Wrap(err, "error posting message")
 			}
 		}
 	}
 	return nil
+}
+
+// mimimize the given text
+func mimimize(text string) string {
+	return strings.ToUpper(vowels.ReplaceAllString(text, "I"))
 }
