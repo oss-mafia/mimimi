@@ -1,5 +1,7 @@
 # Mimimi Slack bot
 
+[![CircleCI](https://circleci.com/gh/oss-mafia/mimimi/tree/master.svg?style=svg&circle-token=TODO)](https://circleci.com/gh/oss-mafia/mimimi/tree/master)
+
 A Slack bot that mimimizes all messages sent to the channels where the bot is present.
 
 ![mimimi](mimimi.jpg)
@@ -14,12 +16,16 @@ Usage:
 
 Build targets
   build            Build the bot
+  test             Run all unit tests
   build-static     Build the statically linked Linux binary
   clean            Clean all binary articats
 
 Packaging and distribution
   docker-build     Build the Docker image
   docker-push      Push the Docker image to the configured registry
+
+Code quality and integrity
+  lint             Run the linters on all projects
 
 Others
   help             Display this help

@@ -32,15 +32,18 @@ build: $(BUILD_DIR)/$(BINARY)  ## Build the bot
 $(BUILD_DIR)/$(BINARY):
 	go build -v -o $@ github.com/oss-mafia/mimimi/cmd
 
+test:  ## Run all unit tests
+	go test `go list -f '{{if .TestGoFiles}}{{.ImportPath}}{{end}}' ./...`
+
 build-static: $(BUILD_DIR)/$(BINARY_STATIC)  ## Build the statically linked Linux binary
 $(BUILD_DIR)/$(BINARY_STATIC):
-	GOOS=linux go build \
-		-a --ldflags '-extldflags "-static"' \
+	CGO_ENABLED=0 GOOS=linux go build \
+		-a --ldflags '-extldflags "-static"' -tags netgo -installsuffix netgo \
 		-o $@ github.com/oss-mafia/mimimi/cmd
 	chmod +x $@
 
 clean:  ## Clean all binary articats
-	rm -rf $(BUILD_DIR)
+	rm -f $(BUILD_DIR)/$(BINARY)
 
 ##@ Packaging and distribution
 
@@ -49,6 +52,15 @@ docker-build: $(BUILD_DIR)/$(BINARY_STATIC)  ## Build the Docker image
 
 docker-push:  ## Push the Docker image to the configured registry
 	docker push $(CONTAINER_REGISTRY)/$(BINARY):$(CONTAINER_TAG)
+
+##@ Code quality and integrity
+
+LINTER := bin/golangci-lint
+$(LINTER):
+	wget -q -O- https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.13
+
+lint: $(LINTER)  ## Run the linters on all projects
+	bin/golangci-lint run --config golangci.yml
 
 ##@ Others
 
